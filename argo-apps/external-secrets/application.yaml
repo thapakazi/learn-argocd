@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: externalsecrets
+  namespace: externalsecrets
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/external-secrets/external-secrets'
+    path: 'deploy/charts/external-secrets'
+    targetRevision: 'v0.5.7'
+  destination:
+    server: 'https://kubernetes.default.svc'
+  syncPolicy: {}
