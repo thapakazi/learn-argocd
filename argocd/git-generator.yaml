@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: env-generator
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/thapakazi/learn-argocd.git
+      revision: main
+      files:
+      - path: charts/values/*/main.yaml
+  template:
+    metadata:
+      name: '{{argocd.appName}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/thapakazi/learn-argocd.git
+        targetRevision: main
+        path: charts
+        plugin:
+          env:
+            - name: HELM_ARGS
+              value: >
+                -f values/{{path.basename}}/main.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace:  '{{namespace}}'
